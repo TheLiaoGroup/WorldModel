@@ -81,8 +81,9 @@ On macOS or Linux, use `.venv/bin/python`. Run the scripts from `code/` in this 
 | 9 | `16_literature_overlap.py`, `17_literature_check.py`, `18_literature_pool.py`, `19_literature_model.py`, `24_literature_curve.py` | Literature comparison, literature-trained models and their training-size curve (see below) |
 | 10 | `20_external.py` | `external_*.csv` (see below) |
 | 11 | `21_gbm.py` | `gbm_*.csv` |
-| 12 | `22_si_tables.py` | `out/si/`: the Supplementary Tables |
-| 13 | `29_silent_pairs.py`, then `13_figures.py` | `silent_pairs.csv` (pairs that leave no literature-style record; Figure 2c); `figures/Figure2–5.pdf/.png` |
+| 12 | `29_silent_pairs.py` | `silent_pairs.csv` (pairs that leave no literature-style record; Figure 2c and Supplementary Table S5) |
+| 13 | `22_si_tables.py` | `out/si/`: the Supplementary Tables |
+| 14 | `13_figures.py` | `figures/Figure2–5.pdf/.png` |
 
 Random draws use fixed seeds. The model runs in steps 3, 5, 8 and 11 take several hours on a desktop computer.
 
