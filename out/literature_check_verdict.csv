@@ -1,0 +1,2 @@
+records_valid,records_dropped,pairs,l1_share_ge20,L1,median_percentile,pct_lo,pct_hi,L2,median_real_gap,real_lo,real_hi,median_sim_gap,sim_lo,sim_hi,pairs_with_sim,ratio,ratio_lo,ratio_hi,L3,share_lit_above_hte_best,median_hte_mean,median_lit_value,median_hte_best,supported
+349,0,147,0.997134670487106,True,1.0,1.0,1.0,True,0.58,0.5291927862068966,0.61,0.338584168125,0.31395636140401567,0.36467277777777773,111,1.713015712494487,1.525117491021526,1.864764779817093,True,0.6870748299319728,0.2096892670600739,0.81,0.6729382,True

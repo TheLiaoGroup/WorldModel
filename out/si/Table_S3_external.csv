@@ -1,0 +1,3 @@
+Dataset,Random MAE (points),Excess error (points),95% interval lower,95% interval upper,Reduction with one random (%),Excess-error criterion met,Random replacement criterion met
+Ahneman C–N coupling,14.6,21.5,14.6,29.7,65.4,True,True
+Perera Suzuki–Miyaura,17.1,18.6,12.4,24.6,51.0,True,True

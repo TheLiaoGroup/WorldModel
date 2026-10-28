@@ -1,0 +1,2 @@
+arrays,meets_A,M1,book_arrays,book_ratio_ge_1_5,M2,book_ratio_min,book_ratio_max,cut_over_half,M3,cut_min,cut_max,delta_min,delta_max
+17,17,True,12,12,True,1.8512304784583091,3.1030493674239947,17,True,0.5419928505096745,0.9226898702824115,0.2277501541572732,0.557554183909834

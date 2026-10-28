@@ -1,0 +1,26 @@
+array,group,pairs,conditions,records,analysed_share
+Acylation,Acylation#1,14,93,1302,1.0
+Acylation,Acylation#2,11,89,979,1.0
+Acylation,Acylation#3,11,93,1023,1.0
+Buchwald-Hartwig,Buchwald-Hartwig#1,22,89,1958,0.9933605720122574
+Buchwald-Hartwig,Buchwald-Hartwig#2,21,94,1974,0.9564336372847011
+Buchwald-Hartwig,Buchwald-Hartwig#3,15,94,1410,0.8659574468085106
+Buchwald-Hartwig,Buchwald-Hartwig#4,15,95,1425,0.9992982456140351
+Buchwald-Hartwig,Buchwald-Hartwig#5,12,93,1116,1.0
+Buchwald-Hartwig CMC,Buchwald-Hartwig CMC#1,27,95,2565,1.0
+Buchwald-Hartwig CMC,Buchwald-Hartwig CMC#2,21,91,1911,1.0
+Buchwald-Hartwig CMC,Buchwald-Hartwig CMC#3,20,95,1900,1.0
+C-O competitive reactions,C-O competitive reactions#1,22,95,2090,0.6392344497607656
+Chan-Lam,Chan-Lam#1,21,33,693,1.0
+Chan-Lam,Chan-Lam#2,16,36,576,1.0
+Chan-Lam,Chan-Lam#3,14,65,910,1.0
+Chan-Lam,Chan-Lam#4,13,31,403,1.0
+Chan-Lam,Chan-Lam#5,11,68,748,1.0
+Heck,Heck#1,85,91,7735,0.7216548157724628
+Heck,Heck#2,11,89,979,0.8774259448416751
+Hiyama,Hiyama#1,14,91,1274,0.9497645211930926
+Hiyama,Hiyama#2,10,88,880,0.8488636363636364
+SNAr,SNAr#1,33,38,1254,0.6483253588516746
+SNAr,SNAr#2,16,45,720,1.0
+SNAr,SNAr#3,15,47,705,0.8042553191489362
+Ullmann,Ullmann#1,13,76,988,1.0

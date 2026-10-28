@@ -1,0 +1,18 @@
+Array,Pair-by-seed rows,Unrecorded rows (%),Unrecorded MAE (points),Recorded MAE (points),Error from unrecorded rows (%),Unrecorded rows with no ≥20% condition (%)
+Amide coupling,3297,30.6,65.8,42.1,40.4,81.9
+Suzuki–Miyaura coupling,2920,17.5,60.1,31.0,29.4,80.2
+Buchwald–Hartwig amination,1140,43.4,55.2,42.8,49.3,64.6
+Allylic substitution,456,87.9,62.3,43.9,91.3,96.3
+Buchwald–Hartwig II,310,78.7,45.9,45.0,79.0,90.2
+C–O coupling (Pd/Cu),630,77.6,36.4,29.1,81.4,73.6
+Chan–Lam coupling,1080,80.2,35.6,29.1,83.3,92.4
+Esterification,470,21.9,64.5,47.7,27.6,87.4
+Grignard addition,730,29.3,53.9,19.9,53.2,93.5
+Heck reaction,1540,58.2,52.3,39.8,65.0,83.7
+Hiyama coupling,1030,83.8,33.5,29.7,85.8,86.9
+Kumada coupling,1480,40.8,47.6,29.6,53.0,82.8
+Pd-catalysed carbonylation,340,87.4,41.0,34.7,89.2,97.6
+Reductive amination,1470,52.7,65.1,55.6,56.8,94.2
+Nucleophilic aromatic substitution,3340,84.7,49.7,33.2,89.3,97.2
+Sonogashira coupling,310,77.1,57.6,40.1,82.9,75.3
+Ullmann coupling,1550,55.7,51.0,32.9,66.5,77.5

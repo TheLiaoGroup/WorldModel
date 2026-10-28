@@ -1,0 +1,2 @@
+arrays_counted,arrays_meeting_A,pooled_delta,pooled_lo,pooled_hi,pooled_mae_random,V1,pooled_cut,cut_lo,cut_hi,arrays_cut_over_half,V2,book_arrays,book_ratio_min,V3,random_book_gap_max,null_lo,null_hi,null_ok,validation_holds
+5,5,0.4141895689754722,0.3942584915370318,0.43562276981488746,0.06851255289054084,True,0.8817129940476756,0.8679169088432181,0.8943780931901109,5,True,1,2.7564706046082827,True,0.006993238486941,-0.001130656455309547,0.0009851660997953347,True,True

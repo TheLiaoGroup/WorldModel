@@ -1,0 +1,18 @@
+Array,Literature-style benchmark MAE (points),Literature-style unrun MAE (points),Random benchmark MAE (points),Random unrun MAE (points),Scored benchmark observations,Eligible (≥100)
+Amide coupling,15.9,49.3,15.1,14.3,2287,True
+Suzuki–Miyaura coupling,15.9,36.1,13.8,13.1,2409,True
+Buchwald–Hartwig amination,20.5,48.0,9.4,8.8,645,True
+Allylic substitution,NA,60.1,2.5,2.3,0,False
+Buchwald–Hartwig II,NA,45.7,2.2,1.8,0,False
+C–O coupling (Pd/Cu),10.7,34.8,2.9,2.8,10,False
+Chan–Lam coupling,15.3,34.3,2.4,2.1,182,True
+Esterification,16.5,51.4,13.8,12.9,367,True
+Grignard addition,16.8,29.9,7.6,7.5,516,True
+Heck reaction,19.0,47.2,7.2,6.9,644,True
+Hiyama coupling,10.3,33.0,1.4,1.0,119,True
+Kumada coupling,17.8,37.1,7.8,7.3,876,True
+Pd-catalysed carbonylation,NA,40.2,0.9,0.9,0,False
+Reductive amination,20.1,60.6,6.2,4.5,695,True
+Nucleophilic aromatic substitution,19.9,47.2,2.5,2.3,510,True
+Sonogashira coupling,NA,53.6,3.9,3.7,0,False
+Ullmann coupling,17.9,43.0,7.3,6.6,686,True

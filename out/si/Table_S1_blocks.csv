@@ -1,0 +1,18 @@
+Array,Substrate pairs,Conditions,Measured cells,Complete (%),Substrate 1 molecules,Substrate 2 molecules,Mean yield (%),Cells yielding ≥20% (%),Pairs with best yield ≥20% (%)
+Amide coupling,330,94,30658,98.8,75,63,22.8,37.1,74.8
+Suzuki–Miyaura coupling,292,69,19905,98.8,124,34,30.4,54.8,86.0
+Buchwald–Hartwig amination,117,95,10673,96.0,73,25,11.9,20.6,70.1
+Allylic substitution,48,89,4263,99.8,8,25,2.4,4.2,14.6
+Buchwald–Hartwig II,31,95,2945,100.0,22,24,1.4,2.1,29.0
+C–O coupling (Pd/Cu),63,92,5760,99.4,28,18,3.1,4.7,42.9
+Chan–Lam coupling,108,32,3456,100.0,50,29,2.8,4.8,25.9
+Esterification,47,51,2383,99.4,29,16,16.1,30.3,80.9
+Grignard addition,73,43,3066,97.7,21,39,26.6,53.5,72.6
+Heck reaction,154,90,13659,98.5,25,52,8.6,14.4,51.3
+Hiyama coupling,110,92,8860,87.5,23,31,1.2,1.6,27.3
+Kumada coupling,148,84,12267,98.7,69,17,14.6,29.4,66.2
+Pd-catalysed carbonylation,34,83,2815,99.8,25,7,0.9,1.6,14.7
+Reductive amination,147,47,6855,99.2,57,49,6.7,11.2,50.3
+Nucleophilic aromatic substitution,334,38,12627,99.5,80,80,3.7,6.7,17.7
+Sonogashira coupling,31,95,2945,100.0,12,29,5.2,9.8,41.9
+Ullmann coupling,155,64,9834,99.1,43,80,11.6,21.2,56.8

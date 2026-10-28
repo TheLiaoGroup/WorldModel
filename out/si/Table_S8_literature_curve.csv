@@ -1,0 +1,13 @@
+Array,Training records,Mean signed error (points),Minimum signed error (points),Maximum signed error (points),Mean excess error (points),Mean benchmark MAE (points),Mean true / benchmark,Excess + signed criterion (draws/5),Benchmark criterion (draws/5)
+Amide coupling,100,45.1,41.7,52.0,28.4,18.9,2.6,5/5,5/5
+Amide coupling,300,45.0,41.9,47.9,28.2,18.4,2.6,5/5,5/5
+Amide coupling,1000,44.2,43.2,45.3,27.4,18.1,2.6,5/5,5/5
+Amide coupling,3000,43.8,43.4,44.1,27.1,17.5,2.7,5/5,5/5
+Suzuki–Miyaura coupling,100,39.4,37.1,43.0,21.1,16.4,2.6,5/5,5/5
+Suzuki–Miyaura coupling,300,38.7,37.2,40.2,20.6,15.7,2.6,5/5,5/5
+Suzuki–Miyaura coupling,1000,39.0,37.3,39.9,20.7,15.2,2.7,5/5,5/5
+Suzuki–Miyaura coupling,3000,37.0,36.8,37.7,19.0,14.8,2.7,5/5,5/5
+Buchwald–Hartwig amination,100,48.4,44.5,52.1,37.3,16.3,3.1,5/5,5/5
+Buchwald–Hartwig amination,300,46.8,40.4,49.4,36.1,15.8,3.1,5/5,5/5
+Buchwald–Hartwig amination,1000,46.4,43.7,50.0,35.7,15.1,3.2,5/5,5/5
+Buchwald–Hartwig amination,3000,47.0,46.7,47.3,36.0,14.0,3.5,5/5,5/5
