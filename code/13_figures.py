@@ -158,9 +158,8 @@ def benchmark_panel(fig, rect):
     ax.plot(100 * lit.book_mae, 100 * lit.cf_mae, "o", ms=3.4, color=BLUE)
     real = pd.read_csv(OUT / "literature_model_verdict.csv").set_index("reaction")
     ax.plot(100 * real.book_mae, 100 * real.mae_literature, "*", ms=7.5, color=BLUE, mec="white", mew=0.5, zorder=5)
-    circle_label = lit.loc[lit.cf_mae.idxmax()]
-    ax.annotate(f"{len(lit)} arrays\nliterature-style", xy=(100 * circle_label.book_mae, 100 * circle_label.cf_mae),
-                xytext=(6, 0), textcoords="offset points", fontsize=S.SMALL, color=BLUE, va="center")
+    # Identify the cluster as a group, rather than attaching its label to the highest point.
+    ax.text(1.2, 43.5, f"{len(lit)} arrays\nliterature-style", fontsize=S.SMALL, color=BLUE, va="center")
     star_label = real.loc[real.book_mae.idxmin()]
     ax.annotate("Reaxys-trained\nsubstrate-only", xy=(100 * star_label.book_mae, 100 * star_label.mae_literature),
                 xytext=(-6, 0), textcoords="offset points", fontsize=S.SMALL, color=BLUE, ha="right", va="center",
@@ -168,7 +167,7 @@ def benchmark_panel(fig, rect):
     ax.text(20, 6, "8 random wells", color=GREY, fontsize=S.SMALL)
     ax.set(xlim=(0, xmax), ylim=(0, ymax), xlabel="Benchmark error (points)", ylabel="Error on untried conditions (points)")
     ax.set_aspect("equal")
-    S.panel_title(fig, ax, "a", f"Benchmarks miss a\n{ratio:.1f}–{ratios.max():.1f}-fold error", 0, 0)
+    S.panel_title(fig, ax, "a", f"Benchmarks understate error\n{ratio:.1f}–{ratios.max():.1f}-fold", 0, 0)
 
 def training_curve(fig, box):
     """Figure 3b: one small panel per reaction class; literature models on 100-3,000 records, five draws each."""
@@ -311,12 +310,6 @@ def figure3(order):
     ax.legend(loc="upper left", ncol=3, frameon=False, borderaxespad=0.15,
               handletextpad=0.25, handlelength=0.7, columnspacing=1.0, fontsize=S.SMALL)
     S.panel_title(fig, ax, "c", "New pairs without a workable condition look workable", 1, 0)
-    false_go = [100 * rf.xs(arm, level="arm").false_go.median() for arm, _, _ in arms]
-    fig.text(0.30 / 7, 0.22 / 6.5,
-             "Median false-go rate: " + " / ".join(f"{value:.0f}%" for value in false_go)
-             + " (literature-style / random / 7 + 1)", fontsize=S.SMALL, color=GREY)
-    fig.text(0.30 / 7, 0.065 / 6.5, "Unworkable: no measured condition reaches 20% yield.",
-             fontsize=S.SMALL, color=GREY)
     save(fig,"Figure3")
 
 
@@ -336,8 +329,8 @@ def top_pick_panel(fig,rect,order,floor):
     lo=5*np.floor(min(vs1.min(),vs8.min())/5)-1
     ax.set(xlabel="Top-pick difference (points)",xlim=(lo,10),xticks=[-20,-10,0,10])
     ax.set_ylim(len(order) - 0.5, -2.5)
-    ax.text(9.5, -1.8, "vs 1 random record", fontsize=S.SMALL, color=BLUE, ha="right", va="center")
-    ax.text(9.5, -0.85, "vs 8 random wells", fontsize=S.SMALL, color=GREY, ha="right", va="center")
+    ax.text(9.5, -2.35, "vs 1 random record", fontsize=S.SMALL, color=BLUE, ha="right", va="center")
+    ax.text(9.5, -1.3, "vs 8 random wells", fontsize=S.SMALL, color=GREY, ha="right", va="center")
     S.panel_title(fig,ax,"c",f"Top-pick success:\nmedian gap {gap:.1f} points",1,1)
 
 
