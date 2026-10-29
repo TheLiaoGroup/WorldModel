@@ -1,7 +1,8 @@
 """Figures 2-5 at print size (Arial 9/8 pt), from the tables in out/.
 
-Figure 2: size and source of the error. Figure 3: why standard checks miss it. Figure 4: two abilities, predicting a
-reagent's effect and picking a workable condition. Figure 5: the same-budget remedy and its validation.
+Figure 2: breadth and decomposition. Figure 3: disappearance of whole substrate pairs.
+Figure 4: evaluation blind spots. Figure 5: same-budget remedy and validation.
+Extended Data 2 preserves literature-yield and reagent-effect comparisons.
 Colours: dark blue = literature-style (success-only) records; grey = random records or measured background; teal = the
 random well; orange = overestimate. Arrays are listed in the same order in every figure: by the literature-style excess
 error, largest first.
@@ -12,8 +13,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from matplotlib import colors as mcolors
 from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch, Rectangle
 
 import figure_style as S
 
@@ -21,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT, FIG = ROOT / "out", ROOT / "figures"
 BLUE, GREY, LIGHT, TEAL, ORANGE = "#1f3b73", "#8c8c8c", "#c8c8c8", "#1a9e8f", "#e07b24"
 PALEBLUE = "#9fb3d6"
+LIGHTORANGE, NEUTRAL, NEARWHITE = "#e9a367", "#f1f2f3", "#f9f9f9"
 NAMES = {"Acylation": "Amide coupling", "Suzuki": "Suzuki–Miyaura", "Buchwald-Hartwig": "Buchwald–Hartwig",
          "Allylic-substitution": "Allylic substitution", "Buchwald-Hartwig CMC": "Buchwald–Hartwig II",
          "C-O competitive reactions": "C–O coupling (Pd/Cu)", "Chan-Lam": "Chan–Lam", "Esterification": "Esterification",
@@ -77,10 +81,10 @@ def figure2(lit, order, floor):
     w = pd.read_csv(OUT / "fig2a_wells.csv.gz")
     d = pd.read_csv(OUT / "literature_decomposition.csv")
     d = d[d.model == "rf"].pivot(index="reaction", columns="train", values="mae") * 100
-    fig = plt.figure(figsize=(7.0, 5.2))
+    fig = plt.figure(figsize=(7.0, 4.9))
     box = inches(fig)
     # a: predicted vs measured, amide coupling; both models as binned medians with interquartile bands
-    ax = fig.add_axes(box(0.55, 2.9, 1.8, 1.8), label="panel")
+    ax = fig.add_axes(box(0.55, 2.55, 1.8, 1.8), label="panel")
     bins = np.linspace(0, 100, 11)
     mid = (bins[1:] + bins[:-1]) / 2
     cut = pd.cut(100 * w.measured, bins, include_lowest=True)
@@ -94,9 +98,9 @@ def figure2(lit, order, floor):
     ax.text(97, 3, f"8 random wells: {over_r:+.1f}", color=GREY, fontsize=S.SMALL, ha="right", va="bottom")
     ax.set(xlim=(0, 100), ylim=(0, 100), xlabel="Measured yield (%)", ylabel="Predicted yield (%)")
     ax.set_aspect("equal")
-    S.panel_title(fig, ax, "a", "Unrun yields are\nsystematically overpredicted", 0, 0)
+    S.panel_title(fig, ax, "a", "Untried yields are\nsystematically overpredicted", 0, 0)
     # b: every array, with its generic reaction
-    ax = fig.add_axes(box(4.3, 1.15, 1.3, 3.55), label="panel")
+    ax = fig.add_axes(box(4.25, 0.65, 1.35, 3.7), label="panel")
     for k, r in enumerate(order):
         row = lit.loc[r]
         ax.plot([100 * row.lo, 100 * row.hi], [k, k], color=BLUE, lw=0.8)
@@ -115,60 +119,56 @@ def figure2(lit, order, floor):
     ax.set_yticks(ypos)
     ax.set_yticklabels([NAMES[r] + ("*" if floor[r] else "") for r in order] + [ext_names[d] for d in ext.dataset])
     ax.set_ylim(ypos[-1] + 0.6, -0.5)
+    ax.text(100 * ext.lo.min(), len(order) - 0.05, "External arrays", fontsize=S.SMALL, color=GREY, va="center")
     ax.tick_params(axis="y", length=0)
     ax.set(xlabel="Excess error (points)", xlim=(0, 65))
-    S.panel_title(fig, ax, "b", "Higher in every array tested", 0, 1)
+    S.panel_title(fig, ax, "b", "Excess error is 22–58 points\nin every analysis array", 0, 1)
     # c: which well, not how many; the three steps annotated with their ranges across arrays
-    ax = fig.add_axes(box(0.55, 0.55, 2.35, 1.5), label="panel")
+    ax = fig.add_axes(box(0.55, 0.65, 2.35, 1.25), label="panel")
     cols = ["random_8", "random_1", "best_1", "literature"]
     for r in order:
         ax.plot(range(4), d.loc[r, cols].to_numpy(), color=LIGHT, lw=0.6, zorder=1)
     ax.plot(range(4), d[cols].median().to_numpy(), color="black", lw=1.8, marker="o", ms=3, zorder=3)
-    steps = [(0.5, d.random_1 - d.random_8, GREY, "fewer"), (1.5, d.best_1 - d.random_1, "#9a6a12", "best of 8"),
+    steps = [(0.5, d.random_1 - d.random_8, GREY, "fewer"), (1.5, d.best_1 - d.random_1, LIGHTORANGE, "best of 8"),
              (2.5, d.literature - d.best_1, ORANGE, "≥20% only")]
     for xm, g, colour, what in steps:
         ax.text(xm, 72, f"+{g.min():.1f}–{g.max():.1f}", fontsize=S.SMALL, ha="center", color=colour)
         ax.text(xm, 65, what, fontsize=S.SMALL, ha="center", color=colour)
-    sp = pd.read_csv(OUT / "silent_pairs.csv")
     ax.set_xticks(range(4))
-    ax.set_xticklabels(["8 random", "1 random", "1 best", f"1 best ≥20%\n{100 * sp.share_silent.min():.0f}–"
-                        f"{100 * sp.share_silent.max():.0f}% of pairs\nleave no record"])
-    ax.get_xticklabels()[3].set_color(ORANGE)
-    ax.set(ylabel="Error, unrun (points)", xlim=(-0.25, 3.25), ylim=(0, 78))
-    S.panel_title(fig, ax, "c", "Which well, not how many", 1, 0)
+    ax.set_xticklabels(["8 random", "1 random", "1 best", "1 best ≥20%"])
+    ax.set(ylabel="Error, untried (points)", xlim=(-0.25, 3.25), ylim=(0, 78))
+    S.panel_title(fig, ax, "c", "Selection costs more than record count", 1, 0)
     save(fig, "Figure2")
 
 
 # ------------------------------------------------------------------ Figure 3: why standard checks miss it
-def figure3():
+def benchmark_panel(fig, rect):
     bk = pd.read_csv(OUT / "book_score.csv")
     bk = bk[bk.model == "rf"]
     lit = bk[(bk.policy == "literature") & (bk.arm == "policy") & (bk.book_wells >= 100)].set_index("reaction")
     rnd = bk[(bk.policy == "habit") & (bk.arm == "random")].set_index("reaction").loc[lit.index]
     ratios = lit.cf_mae / lit.book_mae
     ratio = ratios.min()
-    fig = plt.figure(figsize=(7.0, 3.5))
-    box = inches(fig)
-    side, xmax = 2.3, 40  # box sized to the equal aspect (40 x 65 points) so it is never re-centred
-    ax = fig.add_axes(box(0.55, 0.55, side * xmax / 65, side), label="panel")
+    xmax, ymax = 40, 65
+    ax = fig.add_axes(rect, label="panel")
     ax.plot([0, xmax - 1], [0, xmax - 1], color="black", lw=0.5, ls="--")
     ax.plot([0, 52 / ratio], [0, 52], color=GREY, lw=0.5, ls=":")
-    ax.text(14 / ratio - 1.5, 14, f"{ratio:.1f}×", fontsize=S.SMALL, color=GREY, ha="right", va="center")
+    ax.text(52 / ratio + 1.0, 55, f"{ratio:.1f}×", fontsize=S.SMALL, color=GREY, va="center")
     ax.plot(100 * rnd.book_mae, 100 * rnd.cf_mae, "o", ms=3.4, color=GREY)
     ax.plot(100 * lit.book_mae, 100 * lit.cf_mae, "o", ms=3.4, color=BLUE)
     real = pd.read_csv(OUT / "literature_model_verdict.csv").set_index("reaction")
     ax.plot(100 * real.book_mae, 100 * real.mae_literature, "*", ms=7.5, color=BLUE, mec="white", mew=0.5, zorder=5)
-    ax.text(22, 62, f"{len(lit)} arrays,\nliterature-style", fontsize=S.SMALL, color=BLUE, va="top")
-    ax.plot(27.3, 45.6, "*", ms=7.5, color=BLUE, mec="white", mew=0.5, clip_on=False)
-    ax.text(29.2, 48, "Reaxys-trained\n(substrate-only)", fontsize=S.SMALL, color=BLUE, va="top", clip_on=False)
-    ax.text(17, 6, "8 random wells", color=GREY, fontsize=S.SMALL)
-    ax.set(xlim=(0, xmax), ylim=(0, 65), xlabel="Benchmark error (points)", ylabel="Error on unrun conditions (points)")
+    circle_label = lit.loc[lit.cf_mae.idxmax()]
+    ax.annotate(f"{len(lit)} arrays\nliterature-style", xy=(100 * circle_label.book_mae, 100 * circle_label.cf_mae),
+                xytext=(6, 0), textcoords="offset points", fontsize=S.SMALL, color=BLUE, va="center")
+    star_label = real.loc[real.book_mae.idxmin()]
+    ax.annotate("Reaxys-trained\nsubstrate-only", xy=(100 * star_label.book_mae, 100 * star_label.mae_literature),
+                xytext=(-6, 0), textcoords="offset points", fontsize=S.SMALL, color=BLUE, ha="right", va="center",
+                clip_on=False)
+    ax.text(20, 6, "8 random wells", color=GREY, fontsize=S.SMALL)
+    ax.set(xlim=(0, xmax), ylim=(0, ymax), xlabel="Benchmark error (points)", ylabel="Error on untried conditions (points)")
     ax.set_aspect("equal")
     S.panel_title(fig, ax, "a", f"Benchmarks miss a\n{ratio:.1f}–{ratios.max():.1f}-fold error", 0, 0)
-    training_curve(fig, box)
-    literature_yields(fig.add_axes(box(5.3, 0.95, 0.3, side - 0.4), label="panel"))
-    save(fig, "Figure3")
-
 
 def training_curve(fig, box):
     """Figure 3b: one small panel per reaction class; literature models on 100-3,000 records, five draws each."""
@@ -178,14 +178,14 @@ def training_curve(fig, box):
     assert set(c.reaction) == set(order) and sizes[0] == 100
     axes = []
     for k, rx in enumerate(order):
-        ax = fig.add_axes(box(2.81, 0.55 + (2 - k) * 0.8, 1.38, 0.66), label="panel" if k == 0 else "sub")
+        ax = fig.add_axes(box(4.4, 4.12 + (2 - k) * 0.55, 1.65, 0.48), label="panel" if k == 0 else "sub")
         g = c[c.reaction == rx].groupby("size")
         for col, filled in (("mae_literature", True), ("book_mae", False)):
             m, lo, hi = (100 * g[col].mean(), 100 * g[col].min(), 100 * g[col].max())
             ax.vlines(sizes, lo, hi, color=BLUE, lw=0.6, alpha=0.6)
             ax.plot(sizes, m, "-" if filled else "--", color=BLUE, lw=0.9, marker="*", ms=5.5,
                     mfc=BLUE if filled else "white", mec=BLUE, mew=0.6)
-        ax.text(sizes[-1] * 1.3, 100 * g["mae_literature"].mean().iloc[-1], "unrun", fontsize=S.SMALL, color=BLUE, va="center")
+        ax.text(sizes[-1] * 1.3, 100 * g["mae_literature"].mean().iloc[-1], "untried", fontsize=S.SMALL, color=BLUE, va="center")
         ax.text(sizes[-1] * 1.3, 100 * g["book_mae"].mean().iloc[-1], "benchmark", fontsize=S.SMALL, color=BLUE, va="center")
         ax.text(sizes[0] * 0.85, 75, NAMES[rx], fontsize=S.SMALL, va="top")
         ax.set_xscale("log")
@@ -196,7 +196,7 @@ def training_curve(fig, box):
         axes.append(ax)
     axes[1].set_ylabel("Error (points)")
     axes[2].set_xlabel("Substrate-only literature records per class")
-    S.panel_title(fig, axes[0], "b", "Thirtyfold more records, same error", 0, 1)
+    S.panel_title(fig, axes[0], "b", "Thirtyfold more records,\nsame error", 0, 1)
 
 
 def literature_yields(ax):
@@ -215,54 +215,166 @@ def literature_yields(ax):
         ax.text(0.6, yt, f"{count} {label.replace(chr(10), ' ') if colour == LIGHT else label}", fontsize=S.SMALL,
                 va="center", clip_on=False, color=BLUE if colour == BLUE else "black", linespacing=0.95)
         bottom += 100 * count / n
-    ax.text(-0.5, -6, f"{n} pairs, recipes not matched\nmedians: literature reports {100 * lv.median_lit_value:.0f}%,"
-                      f"\nmeasured array means {100 * lv.median_hte_mean:.0f}%",
-            fontsize=S.SMALL, color=GREY, va="top", clip_on=False, linespacing=1.0)
+    ax.text(-0.5, -6, f"{n} pairs; recipes not matched\nMedians: literature reports {100 * lv.median_lit_value:.0f}%"
+                      f"\nmeasured pair means {100 * lv.median_hte_mean:.0f}%",
+            fontsize=S.SMALL, color="#595959", va="top", clip_on=False, linespacing=1.05)
     ax.set(xlim=(-0.5, 0.5), ylim=(0, 100), ylabel="Substrate pairs (%)")
     ax.set_xticks([])
-    S.panel_title(ax.figure, ax, "c", f"{100 * lv.share_lit_above_hte_best:.0f}% of pairs beat\nthe measured best", 0, 2)
+    S.panel_title(ax.figure, ax, "a", f"{100 * lv.share_lit_above_hte_best:.0f}% of pairs exceed\nthe measured best", 0, 0)
 
 
-# ------------------------------------------------------------------ Figure 4: two abilities
-def figure4(order, floor):
-    gp = pd.read_csv(OUT / "chemistry_gap.csv").set_index(["reaction", "series"])
-    d = pd.read_csv(OUT / "literature_decomposition.csv")
-    top = d[d.model == "rf"].pivot(index="reaction", columns="train", values="top_hit") * 100
-    fig = plt.figure(figsize=(7.0, 3.3))
+def silent_pairs(fig, rect):
+    """Figure 2d: one amide-coupling split; each row is a logged pair, its eight attempted yields (best first) and its best
+    yield anywhere in the library. Rows without an attempted yield of 20% leave no literature-style record."""
+    ex = pd.read_csv(OUT / "silent_pairs_example.csv")
+    tried = [f"tried_{k}" for k in range(1, 9)]
+    ex = ex.sort_values(["recorded", "tried_1"], ascending=[False, False]).reset_index(drop=True)
+    n_rec = int(ex.recorded.sum())
+    silent = ex[~ex.recorded]
+    grid = np.column_stack([ex[tried].to_numpy(), np.full(len(ex), np.nan), ex.best_library.to_numpy()]) * 100
+    cmap = mcolors.ListedColormap(np.vstack([plt.cm.Greys(np.linspace(0.0, 0.08, 20)), plt.cm.Blues(np.linspace(0.35, 1.0, 80))]))
+    cmap.set_bad("white")
+    ax = fig.add_axes(rect, label="panel")
+    ax.imshow(grid, aspect="auto", cmap=cmap, vmin=0, vmax=100, interpolation="nearest")
+    for left, width in ((-0.5, 8), (8.5, 1)):
+        ax.add_patch(Rectangle((left, -0.5), width, len(ex), fill=False, edgecolor=LIGHT, lw=0.5, clip_on=False))
+    ax.axhline(n_rec - 0.5, color=ORANGE, lw=1.0)
+    ax.set_xticks([3.5, 9])
+    n_cond = int((pd.read_csv(OUT / "conditions.csv").reaction == "Acylation").sum())
+    ax.set_xticklabels(["8 attempted,\nbest first", f"best measured\n({n_cond}-condition library)"])
+    ax.set_yticks([])
+    ax.tick_params(axis="x", length=0)
+    for side in ("top", "right", "left", "bottom"):
+        ax.spines[side].set_visible(False)
+    ax.set_ylabel(f"{len(ex)} amide-coupling pairs", fontsize=S.SMALL)
+    x = 10.0
+    ax.text(x, n_rec / 2, f"{n_rec} pairs recorded\nattempted best ≥20%", fontsize=S.SMALL, va="center", color=BLUE,
+            clip_on=False, linespacing=1.05)
+    fail = (silent.best_library < 0.20).mean()
+    ax.text(x, n_rec + len(silent) / 2, f"{len(silent)} pairs ({100 * len(silent) / len(ex):.0f}%) absent;\n"
+            f"{100 * fail:.0f}% stay below 20%\nover measured conditions", fontsize=S.SMALL,
+            va="center", color=ORANGE, clip_on=False, linespacing=1.05)
+    ax.legend(handles=[Patch(facecolor=NEARWHITE, edgecolor=LIGHT, lw=0.5, label="<20%"),
+                       Patch(facecolor=BLUE, edgecolor=BLUE, lw=0.5, label="≥20%")],
+              loc="lower left", bbox_to_anchor=(1.04, -0.045), ncol=2, frameon=False,
+              fontsize=S.SMALL, handlelength=1.0, handletextpad=0.4, columnspacing=1.0, borderaxespad=0)
+    S.panel_title(fig, ax, "a", "The 20% threshold silences whole pairs", 0, 0)
+
+
+# ------------------------------------------------------------------ Figure 3: the mechanism
+def figure3(order):
+    fig = plt.figure(figsize=(7.0, 6.5))
     box = inches(fig)
-    ax = fig.add_axes(box(1.55, 0.55, 1.75, 2.3), label="panel")
-    series = (("measured", "black", "measured", -0.22), ("pred_literature", BLUE, "literature-style", 0.0),
-              ("pred_random_8", GREY, "8 random wells", 0.22))
-    for k, r in enumerate(PILOT):
-        for col, colour, _, dy in series:
-            row = gp.loc[(r, col)]
-            ax.plot([row.lo, row.hi], [k + dy, k + dy], color=colour, lw=0.9)
-            ax.plot(row.gap, k + dy, "o", ms=3.6, color=colour)
-    ax.axvline(0, color=LIGHT, lw=0.6, zorder=0)
-    ax.set_yticks(range(3))
-    ax.set_yticklabels([f"{NAMES[r]}\n({ROLE[r]})" for r in PILOT])
-    ax.set_ylim(2.6, -0.6)
-    ax.tick_params(axis="y", length=0)
-    for col, colour, lab, dy in series:
-        ax.text(gp.loc[(PILOT[0], col)].hi + 0.4, dy, lab, fontsize=S.SMALL, color=colour, va="center")
-    ax.set(xlabel="Recorded reagent minus other (points)", xlim=(-4, 12))
-    S.panel_title(fig, ax, "a", "Predictions miss reagent effects", 0, 0)
-    ax = fig.add_axes(box(5.0, 0.55, 1.95, 2.3), label="panel")
+    silent_pairs(fig, box(0.45, 3.85, 1.45, 2.3))
+    d = pd.read_csv(OUT / "silent_pairs.csv").set_index("reaction").loc[order]
+    ax = fig.add_axes(box(5.0, 3.85, 1.8, 2.3), label="panel")
     for k, r in enumerate(order):
-        ax.plot([top.loc[r, "random_1"], top.loc[r, "literature"]], [k, k], color=LIGHT, lw=0.8)
-        ax.plot(top.loc[r, "random_8"], k, "o", ms=3.2, color=GREY)
-        ax.plot(top.loc[r, "random_1"], k, "o", ms=3.2, mfc="white", mec=GREY, mew=0.8)
-        ax.plot(top.loc[r, "literature"], k, "o", ms=3.2, color=BLUE)
-    rows_axis(ax, order, floor)
-    gap = (top.literature - top.random_1).median()
-    ax.set(xlabel="Top unrun pick reaching 20% (%)", xlim=(0, 75))
-    handles = [Line2D([], [], ls="", marker="o", ms=3.2, color=BLUE, label="literature-style"),
-               Line2D([], [], ls="", marker="o", ms=3.2, mfc="white", mec=GREY, label="1 random record"),
-               Line2D([], [], ls="", marker="o", ms=3.2, color=GREY, label="8 random wells")]
-    ax.legend(handles=handles, loc="center right", bbox_to_anchor=(1.0, 1 - 12.5 / len(order)), frameon=False, fontsize=S.SMALL,
-              handletextpad=0.2, borderaxespad=0.1)  # rows 11-13 are empty to the right
-    S.panel_title(fig, ax, "b", f"Workable picks survive: gap {gap:.1f} points", 0, 1)
-    save(fig, "Figure4")
+        ax.plot([100*d.loc[r,"share_silent"],100*d.loc[r,"error_share_silent"]],[k,k],color=LIGHT,lw=0.65)
+        ax.plot(100*d.loc[r,"share_silent"],k,"o",color=ORANGE,ms=3.7)
+        ax.plot(100*d.loc[r,"error_share_silent"],k,"o",color="black",ms=3.7)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([NAMES[r] for r in order])
+    ax.set(ylim=(len(order)-0.4,-1.2),xlim=(0,100),xticks=[0,50,100],xlabel="Share (%)")
+    ax.tick_params(axis="y",length=0)
+    first = d.loc[order[0]]
+    ax.annotate("Pairs absent", xy=(100 * first.share_silent, 0), xytext=(-5, 0),
+                textcoords="offset points", fontsize=S.SMALL, color=ORANGE, ha="right", va="center")
+    ax.annotate("Share of total error", xy=(100 * first.error_share_silent, 0), xytext=(0, 7),
+                textcoords="offset points", fontsize=S.SMALL, color="black", ha="right", va="bottom")
+    S.panel_title(fig,ax,"b","Absent pairs carry 28–91% of the error",0,1)
+    # The new-pair decision is scored only on pairs absent from model training.
+    # Reuse the order above; the neural learner remains in the SI table.
+    new = pd.read_csv(OUT / "dead_pairs_summary.csv")
+    arms = [("literature", BLUE, "literature-style"), ("random", GREY, "8 random wells"),
+            ("seven_plus_one", TEAL, "7 + 1")]
+    assert len(new) == 102 and not new.duplicated(["reaction", "learner", "arm"]).any()
+    assert set(new.reaction) == set(order) and set(new.learner) == {"rf", "mlp"}
+    assert set(new.arm) == {arm for arm, _, _ in arms}
+    assert new[["auc_max", "auc_mean", "false_go"]].notna().all().all()
+    assert new[["auc_max", "auc_mean", "false_go"]].ge(0).all().all()
+    assert new[["auc_max", "auc_mean", "false_go"]].le(1).all().all()
+    rf = new[new.learner == "rf"].set_index(["reaction", "arm"])
+    ax = fig.add_axes(box(2.10, 0.80, 4.70, 2.35), label="panel")
+    ax.vlines(0.5, -0.05, len(order) - 0.4, color=LIGHT, lw=0.7, ls="--", zorder=0)
+    for arm, colour, label in arms:
+        g = rf.xs(arm, level="arm").loc[order]
+        dy = {"literature": -0.17, "random": 0, "seven_plus_one": 0.17}[arm]
+        ax.plot(g.auc_max, np.arange(len(order)) + dy, "o", ms=3.0, color=colour,
+                label=f"{label} (median {g.auc_max.median():.2f})")
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([NAMES[r] for r in order])
+    ax.tick_params(axis="y", length=0)
+    ax.set(ylim=(len(order) - 0.4, -2.5), xlim=(0.40, 1.0), xticks=[0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+           xlabel="AUROC for new substrate pairs (higher is better)")
+    ax.text(0.5, -0.05, "chance", color=GREY, fontsize=S.SMALL, ha="center", va="center",
+            bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+    ax.legend(loc="upper left", ncol=3, frameon=False, borderaxespad=0.15,
+              handletextpad=0.25, handlelength=0.7, columnspacing=1.0, fontsize=S.SMALL)
+    S.panel_title(fig, ax, "c", "New pairs without a workable condition look workable", 1, 0)
+    false_go = [100 * rf.xs(arm, level="arm").false_go.median() for arm, _, _ in arms]
+    fig.text(0.30 / 7, 0.22 / 6.5,
+             "Median false-go rate: " + " / ".join(f"{value:.0f}%" for value in false_go)
+             + " (literature-style / random / 7 + 1)", fontsize=S.SMALL, color=GREY)
+    fig.text(0.30 / 7, 0.065 / 6.5, "Unworkable: no measured condition reaches 20% yield.",
+             fontsize=S.SMALL, color=GREY)
+    save(fig,"Figure3")
+
+
+# ------------------------------------------------------------------ Figure 4: evaluation blind spots
+def top_pick_panel(fig,rect,order,floor):
+    d=pd.read_csv(OUT/"literature_decomposition.csv")
+    top=d[d.model=="rf"].pivot(index="reaction",columns="train",values="top_hit")*100
+    ax=fig.add_axes(rect,label="panel")
+    vs1,vs8=top.literature-top.random_1,top.literature-top.random_8
+    gap=vs1.median()
+    ax.vlines(0,-0.5,len(order)-0.5,color=LIGHT,lw=0.6,zorder=0)
+    ax.vlines(gap,-0.5,len(order)-0.5,color=BLUE,lw=0.6,ls="--",zorder=0)
+    for k,r in enumerate(order):
+        ax.plot(vs8[r],k,"o",ms=3.4,mfc="white",mec=GREY,mew=0.8)
+        ax.plot(vs1[r],k,"o",ms=3.4,color=BLUE)
+    rows_axis(ax,order,floor)
+    lo=5*np.floor(min(vs1.min(),vs8.min())/5)-1
+    ax.set(xlabel="Top-pick difference (points)",xlim=(lo,10),xticks=[-20,-10,0,10])
+    ax.set_ylim(len(order) - 0.5, -2.5)
+    ax.text(9.5, -1.8, "vs 1 random record", fontsize=S.SMALL, color=BLUE, ha="right", va="center")
+    ax.text(9.5, -0.85, "vs 8 random wells", fontsize=S.SMALL, color=GREY, ha="right", va="center")
+    S.panel_title(fig,ax,"c",f"Top-pick success:\nmedian gap {gap:.1f} points",1,1)
+
+
+def figure4(order,floor):
+    fig=plt.figure(figsize=(7.0,6.15))
+    box=inches(fig)
+    benchmark_panel(fig,box(0.6,0.8,4.9 * 40 / 65,4.9))
+    training_curve(fig,box)
+    top_pick_panel(fig,box(5.45,0.65,1.4,2.6),order,floor)
+    save(fig,"Figure4")
+
+
+def extended_data2():
+    fig=plt.figure(figsize=(7.0,3.0))
+    box=inches(fig)
+    literature_yields(fig.add_axes(box(0.55,0.85,0.24,1.6),label="panel"))
+    gp=pd.read_csv(OUT/"chemistry_gap.csv").set_index(["reaction","series"])
+    ax=fig.add_axes(box(4.25,0.85,2.55,1.6),label="panel")
+    series=(("measured","black","measured",-0.22),("pred_literature",BLUE,"literature-style",0),
+            ("pred_random_8",GREY,"8 random wells",0.22))
+    for k,r in enumerate(PILOT):
+        for col,colour,_,dy in series:
+            row=gp.loc[(r,col)]
+            ax.plot([row.lo,row.hi],[k+dy,k+dy],color=colour,lw=0.9)
+            ax.plot(row.gap,k+dy,"o",ms=3.6,color=colour)
+    ax.axvline(0,color=LIGHT,lw=0.6,zorder=0)
+    ax.set_yticks(range(3))
+    ax.set_yticklabels([NAMES[r] for r in PILOT])
+    ax.set(ylim=(2.6,-0.6),xlabel="Shared minus different\nfirst-reagent (points)",xlim=(-4,8),xticks=[-4,0,4,8])
+    ax.tick_params(axis="y",length=0)
+    for col,colour,lab,dy in series:
+        if col == "measured":
+            ax.text(gp.loc[(PILOT[0],col)].gap,-0.53,lab,fontsize=S.SMALL,color=colour,ha="center",va="bottom")
+        else:
+            ax.text(gp.loc[(PILOT[0],col)].hi+0.35,dy,lab,fontsize=S.SMALL,color=colour,va="center")
+    S.panel_title(fig,ax,"b","Predictions miss reagent effects",0,1)
+    save(fig,"ExtendedData2")
 
 
 # ------------------------------------------------------------------ Figure 5: the remedy and its validation
@@ -275,24 +387,34 @@ def validation_counted():
 
 
 def figure5(s, order):
-    fig = plt.figure(figsize=(7.0, 2.9))
+    fig = plt.figure(figsize=(7.0, 2.6))
     box = inches(fig)
-    # a: the rule on one plate; rings = experiments run, filled = records kept
-    ax = fig.add_axes(box(0.1, 0.45, 1.75, 1.75), label="panel")
-    picks, best, rand = [(1, 3), (2, 7), (3, 1), (4, 9), (5, 5), (6, 2), (7, 10)], (4, 9), (2, 4)
-    for row in range(8):
-        for col in range(12):
-            ax.add_patch(plt.Circle((col, -row), 0.36, color=LIGHT, lw=0))
-    for (row, col) in picks:
-        ax.add_patch(plt.Circle((col, -row), 0.42, fill=False, ec=BLUE, lw=1.0))
-    ax.add_patch(plt.Circle((best[1], -best[0]), 0.36, color=BLUE, lw=0))
-    ax.add_patch(plt.Circle((rand[1], -rand[0]), 0.36, color=TEAL, lw=0))
-    ax.add_patch(plt.Circle((rand[1], -rand[0]), 0.62, fill=False, ec=TEAL, lw=1.0))
-    ax.text(5.5, -8.4, "ring = run, coloured = recorded", fontsize=S.SMALL, ha="center", color=GREY, va="top")
-    ax.text(5.5, -9.6, "7 by history: best kept if ≥20%", fontsize=S.SMALL, ha="center", color=BLUE, va="top")
-    ax.text(5.5, -10.8, "1 at random: always kept", fontsize=S.SMALL, ha="center", color=TEAL, va="top")
-    ax.set(xlim=(-0.8, 11.8), ylim=(-11.8, 0.8))
-    ax.set_aspect("equal")
+    # a: schematic condition yields; every marker is an attempt, filled markers are recorded outcomes.
+    ax = fig.add_axes(box(0.1, 0.55, 1.75, 1.75), label="panel")
+    x = np.arange(8)
+    schematic_yields = np.array([0.86, 0.71, 0.54, 0.36, 0.22, 0.15, 0.08, 0.04])
+    for baseline in (0.66, 0.17):
+        edges = [BLUE] * 8 if baseline == 0.66 else [BLUE] * 7 + [TEAL]
+        ax.bar(x, 0.25 * schematic_yields, bottom=baseline, width=0.64, color=NEUTRAL, edgecolor=edges, lw=0.5)
+        ax.hlines(baseline, -0.5, 7.5, color=BLUE, lw=0.5)
+    for k, y in enumerate(schematic_yields):
+        ax.plot(k, 0.66 + 0.25 * y + 0.022, "o", ms=3.6, mec=BLUE, mew=0.8,
+                mfc=BLUE if k == 0 else "white")
+        colour = TEAL if k == 7 else BLUE
+        ax.plot(k, 0.17 + 0.25 * y + 0.022, "o", ms=3.6, mec=colour, mew=0.8,
+                mfc=colour if k in (0, 7) else "white")
+    ax.text(-0.5, 0.99, "8 by history", fontsize=S.SMALL, color=BLUE, va="top")
+    ax.text(-0.5, 0.62, "Best of 8, if ≥20%", fontsize=S.SMALL, color=BLUE, va="top")
+    ax.text(-0.5, 0.50, "7 by history", fontsize=S.SMALL, color=BLUE, va="top")
+    ax.text(3.55, 0.50, "+ 1 random", fontsize=S.SMALL, color=TEAL, va="top")
+    ax.text(-0.5, 0.13, "Best of 7, if ≥20%", fontsize=S.SMALL, color=BLUE, va="top")
+    ax.text(-0.5, 0.045, "+ 1 random, always kept", fontsize=S.SMALL, color=TEAL, va="top")
+    handles = [Line2D([], [], ls="", marker="o", ms=3.6, mfc="white", mec="black", mew=0.8, label="attempts"),
+               Line2D([], [], ls="", marker="o", ms=3.6, color="black", label="recorded")]
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(-0.03, -0.055), ncol=2, frameon=False,
+              handletextpad=0.2, columnspacing=0.7, borderaxespad=0, fontsize=S.SMALL)
+    ax.text(-0.5, -0.18, "Schematic condition yields", fontsize=S.SMALL, color=GREY, va="top")
+    ax.set(xlim=(-0.7, 7.7), ylim=(0, 1.02))
     ax.axis("off")
     S.panel_title(fig, ax, "a", "Same budget: 7 + 1", 0, 0)
     # b: excess error against the number of random wells, on a true count axis
@@ -343,13 +465,14 @@ def main():
     FIG.mkdir(exist_ok=True)
     v, s, lit, order, floor = load()
     figure2(lit, order, floor)
+    figure3(order)
     figure4(order, floor)
     figure5(s, order)
     if (OUT / "literature_check_pairs.csv").exists():
-        figure3()
-        print("wrote Figures 2-5")
+        extended_data2()
+        print("wrote Figures 2–5 and Extended Data 2")
     else:  # per-pair literature yields are licensed and not distributed; see README
-        print("wrote Figures 2, 4 and 5; Figure 3 needs out/literature_check_pairs.csv from 17_literature_check.py")
+        print("wrote Figures 2–5; Extended Data 2 requires licensed per-pair literature yields")
 
 
 if __name__ == "__main__":

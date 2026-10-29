@@ -5,8 +5,14 @@ outcome, the mean absolute error on unrun conditions for those pairs and for rec
 error they carry, and the share of them with any condition at or above 20% anywhere in the array.
 
 Input: out/pilot_errors*.csv.gz (04_run_pilot.py), out/wells.csv.gz (01_build_blocks.py).
-Output: out/silent_pairs.csv (shares as fractions, errors as yield fractions).
+Example for Figure 2d: amide coupling, seed 0, fold 0 (the fold of the Figure 1 pair is not needed; the rows are the
+logged pairs of that split). For each logged pair, its eight attempted yields (sorted), whether a record is kept and its
+best yield over the whole condition library.
+
+Output: out/silent_pairs.csv (shares as fractions, errors as yield fractions); out/silent_pairs_example.csv.
 """
+
+import importlib
 
 import numpy as np
 import pandas as pd
@@ -35,6 +41,26 @@ def main():
     out.to_csv(L.OUT / "silent_pairs.csv", index=False)
     print(out.round(3).to_string(index=False))
     print(f"pooled share of silent pair rows with a workable condition anywhere: {(e[e.silent].best >= L.HIT).mean():.3f}")
+    example()
+
+
+def example(name="Acylation", seed=0, fold=0):
+    ex = importlib.import_module("09_example_and_chemistry")
+    block = L.load_block(name)
+    logged, hist_mean = ex.fold_setup(block, seed, fold)
+    Y = block.Y[logged]
+    run, report = L.run_policy("literature", Y, hist_mean, 0.0, L.rng_for(block.name, "literature", 0.0, seed, fold))
+    rows = []
+    for i, j in enumerate(logged):
+        tried = np.sort(Y[i][run[i]])[::-1]
+        assert len(tried) == 8 and report[i].sum() == (tried[0] >= L.HIT)
+        rows.append(dict(pair=block.pairs[j], recorded=bool(report[i].any()), best_library=np.nanmax(block.Y[j]),
+                         **{f"tried_{k + 1}": v for k, v in enumerate(tried)}))
+    out = pd.DataFrame(rows)
+    out.to_csv(L.OUT / "silent_pairs_example.csv", index=False)
+    silent = out[~out.recorded]
+    print(f"example {name}: {len(out)} pairs, {len(silent)} without a record; "
+          f"{(silent.best_library < L.HIT).mean():.3f} of them below 20% across the library")
 
 
 if __name__ == "__main__":

@@ -97,6 +97,19 @@ def pct(x):
     return (100 * x).round(1)
 
 
+def dead_pairs_table():
+    """Format the stored new-pair summaries without fitting or rescoring models."""
+    rows = pd.read_csv(OUT / "dead_pairs_summary.csv")
+    return pd.DataFrame({
+        "Learner": rows.learner.map({"rf": "Random forest", "mlp": "Neural network (MLP)"}),
+        "Array": rows.reaction.map(NAMES),
+        "Records": rows.arm.map({"literature": "Literature-style", "random": "Random", "seven_plus_one": "7 + 1"}),
+        "AUROC (maximum)": rows.auc_max.round(3),
+        "AUROC (mean)": rows.auc_mean.round(3),
+        "False-go (%)": pct(rows.false_go),
+    })
+
+
 def numbered_filenames():
     """Table file names by stable suffix: numbered from the manuscript when it is present, otherwise as shipped."""
     if (Path(__file__).with_name("make_submission_nature.py")).exists() and (ROOT / "manuscript" / "manuscript.md").is_file():
@@ -122,7 +135,14 @@ def main():
             unknown = set(frame.Array) - set(array_rank)
             if unknown:
                 raise ValueError(f"Unknown array labels in {suffix}: {sorted(unknown)}")
-            frame = frame.sort_values("Array", key=lambda values: values.map(array_rank), kind="stable")
+            if "Learner" in frame:
+                learner_rank = {name: i for i, name in enumerate(("Random forest", "Gradient-boosted trees", "Neural network (MLP)"))}
+                if not set(frame.Learner) <= set(learner_rank):
+                    raise ValueError(f"Unknown learner labels in {suffix}")
+                frame = (frame.assign(_learner_rank=frame.Learner.map(learner_rank), _array_rank=frame.Array.map(array_rank))
+                         .sort_values(["_learner_rank", "_array_rank"], kind="stable").drop(columns=["_learner_rank", "_array_rank"]))
+            else:
+                frame = frame.sort_values("Array", key=lambda values: values.map(array_rank), kind="stable")
         frame = frame.rename(columns=DISPLAY_COLUMNS.get(suffix, {}))
         frame.to_csv(SI / table_filenames[suffix], index=False, na_rep="NA")
 
@@ -167,6 +187,7 @@ def main():
                        "Error from unrecorded rows (%)": pct(silent.error_share_silent),
                        "Unrecorded rows with no ≥20% condition (%)": pct(1 - silent.silent_with_workable)})
     write_table(ts, "silent_pairs")
+    write_table(dead_pairs_table(), "dead_pairs")
 
     book_scores = pd.read_csv(OUT / "book_score.csv")
     bk = book_scores[(book_scores.model == "rf") & (book_scores.policy == "literature") &
@@ -251,13 +272,24 @@ def main():
                         "95% interval low": pct(xv.lo), "95% interval high": pct(xv.hi), "Reduction with 1 random of 8 (%)": pct(xv.cut_1_random),
                         "Excess-error criterion met": xv.E1, "Random-replacement criterion met": xv.E2})
     write_table(t9a, "external")
-    g0 = gv[gv.f == 0].set_index("reaction")
-    g1 = gv[gv.f == 0.1].set_index("reaction")
     gb = pd.read_csv(OUT / "gbm_book.csv").set_index("reaction")
-    g0 = g0.join(gb[["book_mae", "cf_mae"]], validate="one_to_one")
-    t9b = pd.DataFrame({"Array": [NAMES[r] for r in g0.index], "Excess error (points)": pct(g0.delta), "95% interval low": pct(g0.lo),
-                        "95% interval high": pct(g0.hi), "Reduction with 1 random of 8 (%)": pct(1 - g1.delta / g0.delta),
-                        "Benchmark MAE (points)": pct(g0.book_mae), "Unrun-condition MAE (points)": pct(g0.cf_mae)})
+    neural = pd.read_csv(OUT / "mlp_summary.csv")
+    neural_book = pd.read_csv(OUT / "mlp_book.csv").set_index("reaction")
+    learner_frames = []
+    for learner, summary, benchmarks in (("Random forest", s, bk), ("Gradient-boosted trees", gv, gb),
+                                         ("Neural network (MLP)", neural, neural_book)):
+        g0 = summary[summary.f == 0].set_index("reaction")
+        g1 = summary[summary.f == 0.1].set_index("reaction")
+        if (len(g0) != 17 or not g0.index.is_unique or not g1.index.is_unique or set(g0.index) != set(g1.index)
+                or set(g0.index) != set(benchmarks.index)):
+            raise ValueError(f"The {learner} comparison must contain exactly the seventeen analysis arrays")
+        g0 = g0.join(benchmarks[["book_mae", "cf_mae"]], validate="one_to_one")
+        learner_frames.append(pd.DataFrame({
+            "Learner": learner, "Array": [NAMES[r] for r in g0.index], "Excess error (points)": pct(g0.delta),
+            "95% interval low": pct(g0.lo), "95% interval high": pct(g0.hi),
+            "Reduction with 1 random of 8 (%)": pct(1 - g1.delta / g0.delta),
+            "Benchmark MAE (points)": pct(g0.book_mae), "Unrun-condition MAE (points)": pct(g0.cf_mae)}))
+    t9b = pd.concat(learner_frames, ignore_index=True)
     write_table(t9b, "gradient_boosting")
     for path in SI.glob("Table_S*.csv"):
         parts = path.stem.split("_", 2)

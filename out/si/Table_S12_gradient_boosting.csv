@@ -1,0 +1,52 @@
+Learner,Array,Excess error (points),95% interval lower,95% interval upper,Reduction with one random (%),Benchmark MAE (points),Unrun MAE (points)
+Random forest,Amide coupling,35.0,32.6,37.3,79.3,15.9,49.3
+Random forest,Suzuki–Miyaura coupling,23.0,21.0,25.4,71.4,15.9,36.1
+Random forest,Buchwald–Hartwig amination,39.2,36.5,42.1,81.5,20.5,48.0
+Random forest,Allylic substitution,57.7,52.3,63.1,95.5,NA,60.1
+Random forest,Buchwald–Hartwig II,44.0,40.9,47.4,90.7,NA,45.7
+Random forest,C–O coupling (Pd/Cu),32.0,28.6,35.5,90.8,10.7,34.8
+Random forest,Chan–Lam coupling,32.2,30.2,34.2,90.5,15.3,34.3
+Random forest,Esterification,38.6,34.6,42.8,72.2,16.5,51.4
+Random forest,Grignard addition,22.4,17.7,27.1,79.1,16.8,29.9
+Random forest,Heck reaction,40.3,37.6,42.9,88.0,19.0,47.2
+Random forest,Hiyama coupling,31.9,30.4,33.7,94.3,10.3,33.0
+Random forest,Kumada coupling,29.8,27.0,32.4,78.8,17.8,37.1
+Random forest,Pd-catalysed carbonylation,39.4,34.2,45.2,94.6,NA,40.2
+Random forest,Reductive amination,56.1,54.0,58.3,85.8,20.1,60.6
+Random forest,Nucleophilic aromatic substitution,44.9,43.1,46.6,95.9,19.9,47.2
+Random forest,Sonogashira coupling,49.9,44.1,55.5,92.4,NA,53.6
+Random forest,Ullmann coupling,36.5,33.8,39.3,82.8,17.9,43.0
+Gradient-boosted trees,Amide coupling,33.4,31.4,35.6,75.9,17.7,49.2
+Gradient-boosted trees,Suzuki–Miyaura coupling,22.8,20.9,24.7,70.4,16.8,36.3
+Gradient-boosted trees,Buchwald–Hartwig amination,40.2,37.1,43.2,76.1,20.1,50.0
+Gradient-boosted trees,Allylic substitution,55.8,50.7,60.4,89.8,NA,59.1
+Gradient-boosted trees,Buchwald–Hartwig II,44.5,41.0,48.5,83.7,NA,46.7
+Gradient-boosted trees,C–O coupling (Pd/Cu),33.1,30.5,36.0,82.8,12.9,36.5
+Gradient-boosted trees,Chan–Lam coupling,33.3,31.5,35.1,85.5,13.8,36.1
+Gradient-boosted trees,Esterification,37.0,32.5,41.5,62.3,16.6,51.4
+Gradient-boosted trees,Grignard addition,24.7,19.9,29.7,54.2,17.6,32.6
+Gradient-boosted trees,Heck reaction,41.8,39.1,44.5,84.4,19.7,49.8
+Gradient-boosted trees,Hiyama coupling,33.2,31.8,34.9,87.5,11.4,34.8
+Gradient-boosted trees,Kumada coupling,31.8,28.9,34.6,75.4,17.8,40.0
+Gradient-boosted trees,Pd-catalysed carbonylation,38.9,33.7,44.8,90.9,NA,40.4
+Gradient-boosted trees,Reductive amination,53.9,51.9,55.9,84.7,20.2,60.7
+Gradient-boosted trees,Nucleophilic aromatic substitution,47.2,45.4,48.9,92.3,19.2,50.3
+Gradient-boosted trees,Sonogashira coupling,49.5,43.3,55.3,80.3,NA,54.2
+Gradient-boosted trees,Ullmann coupling,38.2,35.5,40.9,77.1,18.0,45.8
+Neural network (MLP),Amide coupling,36.9,35.0,38.9,83.4,17.0,47.0
+Neural network (MLP),Suzuki–Miyaura coupling,22.9,20.8,25.1,79.0,17.7,36.0
+Neural network (MLP),Buchwald–Hartwig amination,40.1,37.0,43.3,86.5,22.0,48.3
+Neural network (MLP),Allylic substitution,56.9,51.8,61.4,97.7,NA,59.2
+Neural network (MLP),Buchwald–Hartwig II,46.1,42.5,49.9,95.4,NA,48.0
+Neural network (MLP),C–O coupling (Pd/Cu),34.1,31.4,37.0,95.4,11.7,37.1
+Neural network (MLP),Chan–Lam coupling,36.6,34.5,38.5,96.0,16.4,38.8
+Neural network (MLP),Esterification,38.5,34.2,42.8,76.9,17.0,50.1
+Neural network (MLP),Grignard addition,22.0,16.8,26.9,84.9,16.5,29.9
+Neural network (MLP),Heck reaction,39.7,37.0,42.0,90.1,19.7,46.0
+Neural network (MLP),Hiyama coupling,35.1,33.5,36.9,98.3,11.4,36.6
+Neural network (MLP),Kumada coupling,31.1,28.2,33.8,86.4,20.4,38.1
+Neural network (MLP),Pd-catalysed carbonylation,42.9,39.2,46.8,98.3,NA,44.0
+Neural network (MLP),Reductive amination,56.3,53.8,58.9,94.1,22.0,59.7
+Neural network (MLP),Nucleophilic aromatic substitution,45.4,42.8,47.7,97.0,22.7,47.9
+Neural network (MLP),Sonogashira coupling,50.3,44.2,55.8,95.0,NA,54.0
+Neural network (MLP),Ullmann coupling,36.9,33.9,39.7,89.3,19.3,43.2

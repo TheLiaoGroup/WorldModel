@@ -1,0 +1,103 @@
+Learner,Array,Records,AUROC (maximum),AUROC (mean),False-go (%)
+Random forest,Amide coupling,Literature-style,0.647,0.647,100.0
+Random forest,Amide coupling,Random,0.853,0.856,48.0
+Random forest,Amide coupling,7 + 1,0.852,0.854,79.0
+Random forest,Suzuki–Miyaura coupling,Literature-style,0.617,0.615,100.0
+Random forest,Suzuki–Miyaura coupling,Random,0.8,0.786,55.8
+Random forest,Suzuki–Miyaura coupling,7 + 1,0.795,0.789,95.6
+Random forest,Buchwald–Hartwig amination,Literature-style,0.594,0.597,100.0
+Random forest,Buchwald–Hartwig amination,Random,0.741,0.739,37.3
+Random forest,Buchwald–Hartwig amination,7 + 1,0.735,0.732,98.4
+Random forest,Allylic substitution,Literature-style,0.415,0.414,100.0
+Random forest,Allylic substitution,Random,0.688,0.75,7.5
+Random forest,Allylic substitution,7 + 1,0.675,0.723,30.9
+Random forest,Buchwald–Hartwig II,Literature-style,0.491,0.487,100.0
+Random forest,Buchwald–Hartwig II,Random,0.684,0.737,16.4
+Random forest,Buchwald–Hartwig II,7 + 1,0.751,0.75,62.2
+Random forest,C–O coupling (Pd/Cu),Literature-style,0.472,0.47,100.0
+Random forest,C–O coupling (Pd/Cu),Random,0.808,0.853,8.8
+Random forest,C–O coupling (Pd/Cu),7 + 1,0.777,0.785,22.5
+Random forest,Chan–Lam coupling,Literature-style,0.524,0.526,100.0
+Random forest,Chan–Lam coupling,Random,0.762,0.754,4.3
+Random forest,Chan–Lam coupling,7 + 1,0.794,0.774,18.7
+Random forest,Esterification,Literature-style,0.579,0.578,100.0
+Random forest,Esterification,Random,0.638,0.63,74.9
+Random forest,Esterification,7 + 1,0.619,0.59,100.0
+Random forest,Grignard addition,Literature-style,0.511,0.51,100.0
+Random forest,Grignard addition,Random,0.852,0.86,32.4
+Random forest,Grignard addition,7 + 1,0.844,0.852,69.6
+Random forest,Heck reaction,Literature-style,0.628,0.625,100.0
+Random forest,Heck reaction,Random,0.939,0.923,6.7
+Random forest,Heck reaction,7 + 1,0.95,0.95,46.6
+Random forest,Hiyama coupling,Literature-style,0.517,0.519,100.0
+Random forest,Hiyama coupling,Random,0.822,0.839,3.2
+Random forest,Hiyama coupling,7 + 1,0.8,0.762,38.6
+Random forest,Kumada coupling,Literature-style,0.58,0.586,100.0
+Random forest,Kumada coupling,Random,0.843,0.823,28.1
+Random forest,Kumada coupling,7 + 1,0.868,0.86,86.9
+Random forest,Pd-catalysed carbonylation,Literature-style,0.558,0.56,100.0
+Random forest,Pd-catalysed carbonylation,Random,0.737,0.736,0.8
+Random forest,Pd-catalysed carbonylation,7 + 1,0.755,0.753,2.2
+Random forest,Reductive amination,Literature-style,0.514,0.512,100.0
+Random forest,Reductive amination,Random,0.752,0.768,30.1
+Random forest,Reductive amination,7 + 1,0.651,0.766,99.3
+Random forest,Nucleophilic aromatic substitution,Literature-style,0.585,0.587,100.0
+Random forest,Nucleophilic aromatic substitution,Random,0.924,0.926,2.2
+Random forest,Nucleophilic aromatic substitution,7 + 1,0.924,0.925,3.3
+Random forest,Sonogashira coupling,Literature-style,0.566,0.563,100.0
+Random forest,Sonogashira coupling,Random,0.691,0.731,14.9
+Random forest,Sonogashira coupling,7 + 1,0.733,0.735,22.7
+Random forest,Ullmann coupling,Literature-style,0.559,0.563,100.0
+Random forest,Ullmann coupling,Random,0.782,0.786,22.0
+Random forest,Ullmann coupling,7 + 1,0.8,0.805,63.6
+Neural network (MLP),Amide coupling,Literature-style,0.669,0.673,100.0
+Neural network (MLP),Amide coupling,Random,0.868,0.871,33.3
+Neural network (MLP),Amide coupling,7 + 1,0.841,0.852,60.8
+Neural network (MLP),Suzuki–Miyaura coupling,Literature-style,0.601,0.607,100.0
+Neural network (MLP),Suzuki–Miyaura coupling,Random,0.8,0.806,47.8
+Neural network (MLP),Suzuki–Miyaura coupling,7 + 1,0.778,0.792,75.0
+Neural network (MLP),Buchwald–Hartwig amination,Literature-style,0.544,0.543,100.0
+Neural network (MLP),Buchwald–Hartwig amination,Random,0.745,0.738,42.0
+Neural network (MLP),Buchwald–Hartwig amination,7 + 1,0.684,0.688,73.7
+Neural network (MLP),Allylic substitution,Literature-style,0.425,0.436,100.0
+Neural network (MLP),Allylic substitution,Random,0.773,0.77,12.4
+Neural network (MLP),Allylic substitution,7 + 1,0.769,0.77,14.0
+Neural network (MLP),Buchwald–Hartwig II,Literature-style,0.448,0.445,100.0
+Neural network (MLP),Buchwald–Hartwig II,Random,0.569,0.563,33.1
+Neural network (MLP),Buchwald–Hartwig II,7 + 1,0.702,0.691,41.0
+Neural network (MLP),C–O coupling (Pd/Cu),Literature-style,0.404,0.395,100.0
+Neural network (MLP),C–O coupling (Pd/Cu),Random,0.716,0.723,19.9
+Neural network (MLP),C–O coupling (Pd/Cu),7 + 1,0.713,0.711,28.7
+Neural network (MLP),Chan–Lam coupling,Literature-style,0.422,0.426,100.0
+Neural network (MLP),Chan–Lam coupling,Random,0.819,0.821,4.5
+Neural network (MLP),Chan–Lam coupling,7 + 1,0.794,0.797,16.4
+Neural network (MLP),Esterification,Literature-style,0.588,0.591,100.0
+Neural network (MLP),Esterification,Random,0.609,0.612,76.2
+Neural network (MLP),Esterification,7 + 1,0.619,0.558,86.8
+Neural network (MLP),Grignard addition,Literature-style,0.482,0.486,100.0
+Neural network (MLP),Grignard addition,Random,0.822,0.83,25.2
+Neural network (MLP),Grignard addition,7 + 1,0.814,0.826,42.9
+Neural network (MLP),Heck reaction,Literature-style,0.646,0.642,99.6
+Neural network (MLP),Heck reaction,Random,0.958,0.956,4.6
+Neural network (MLP),Heck reaction,7 + 1,0.938,0.939,19.9
+Neural network (MLP),Hiyama coupling,Literature-style,0.441,0.436,99.9
+Neural network (MLP),Hiyama coupling,Random,0.784,0.772,3.8
+Neural network (MLP),Hiyama coupling,7 + 1,0.777,0.777,18.7
+Neural network (MLP),Kumada coupling,Literature-style,0.548,0.548,99.6
+Neural network (MLP),Kumada coupling,Random,0.891,0.892,21.6
+Neural network (MLP),Kumada coupling,7 + 1,0.881,0.885,44.1
+Neural network (MLP),Pd-catalysed carbonylation,Literature-style,0.462,0.459,100.0
+Neural network (MLP),Pd-catalysed carbonylation,Random,0.767,0.765,0.0
+Neural network (MLP),Pd-catalysed carbonylation,7 + 1,0.839,0.841,1.4
+Neural network (MLP),Reductive amination,Literature-style,0.531,0.536,100.0
+Neural network (MLP),Reductive amination,Random,0.787,0.794,31.5
+Neural network (MLP),Reductive amination,7 + 1,0.766,0.79,61.9
+Neural network (MLP),Nucleophilic aromatic substitution,Literature-style,0.576,0.573,100.0
+Neural network (MLP),Nucleophilic aromatic substitution,Random,0.941,0.942,2.6
+Neural network (MLP),Nucleophilic aromatic substitution,7 + 1,0.935,0.935,6.2
+Neural network (MLP),Sonogashira coupling,Literature-style,0.635,0.635,100.0
+Neural network (MLP),Sonogashira coupling,Random,0.683,0.677,13.4
+Neural network (MLP),Sonogashira coupling,7 + 1,0.716,0.713,21.9
+Neural network (MLP),Ullmann coupling,Literature-style,0.526,0.536,100.0
+Neural network (MLP),Ullmann coupling,Random,0.862,0.862,20.6
+Neural network (MLP),Ullmann coupling,7 + 1,0.848,0.857,39.1

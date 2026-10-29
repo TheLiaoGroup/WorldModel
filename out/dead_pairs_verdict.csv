@@ -1,0 +1,2 @@
+eligible_arrays,D1_arrays,D1,D2_arrays,D2,D3_arrays,D3_of,D3,auc_lit_median,auc_random_median,auc_7p1_median,false_go_lit_median,false_go_random_median
+17,17,True,17,True,17,17,True,0.5585259420069763,0.7816575446550991,0.7939581896263981,1.0,0.16363636363636364

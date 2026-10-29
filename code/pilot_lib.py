@@ -144,7 +144,28 @@ def fit_predict(model, block, pair_idx, report, seed):
                           colsample_bytree=0.33, random_state=seed, verbose=-1).fit(X, y)
         Xa = np.hstack([np.repeat(block.pair_fp[pair_idx], C, 0), np.tile(block.cond_x, (P, 1))])
         return g.predict(Xa).reshape(P, C)
+    if model == "mlp":   # neural check; architecture and training fixed before results were read
+        return mlp(np.hstack([block.pair_fp[pair_idx][pi], block.cond_x[ci]]), y,
+                   np.hstack([np.repeat(block.pair_fp[pair_idx], C, 0), np.tile(block.cond_x, (P, 1))]), seed).reshape(P, C)
     raise ValueError(model)
+
+
+def mlp(X, y, Xa, seed, epochs=300):
+    import torch
+    torch.manual_seed(seed)
+    X, y, Xa = (torch.tensor(a, dtype=torch.float32) for a in (X, y, Xa))
+    net = torch.nn.Sequential(torch.nn.Linear(X.shape[1], 256), torch.nn.ReLU(), torch.nn.Dropout(0.1),
+                              torch.nn.Linear(256, 64), torch.nn.ReLU(), torch.nn.Dropout(0.1),
+                              torch.nn.Linear(64, 1), torch.nn.Sigmoid())
+    opt = torch.optim.Adam(net.parameters(), lr=1e-3, weight_decay=1e-4)
+    net.train()
+    for _ in range(epochs):
+        opt.zero_grad()
+        torch.nn.functional.mse_loss(net(X).squeeze(1), y).backward()
+        opt.step()
+    net.eval()
+    with torch.no_grad():
+        return net(Xa).squeeze(1).numpy().astype(float)
 
 
 def additive(pi, ci, y, P, C, lam=1.0, iters=20):
