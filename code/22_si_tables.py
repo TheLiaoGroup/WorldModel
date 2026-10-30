@@ -223,7 +223,7 @@ def main():
                            "Pairs with literature above HTE best": g.apply(lambda x: int((x.lit_value > x.hte_best).sum()), include_groups=False)})
         t7.insert(0, "Array", [NAMES.get(r, r) for r in t7.index])
         write_table(t7, "literature_check")
-    else:  # per-pair literature yields are licensed and not distributed; the shipped table is kept
+    else:  # manually extracted per-pair literature yields are not distributed; the shipped table is kept
         target = SI / table_filenames["literature_check"]
         if not target.exists():
             shipped = list(SI.glob("Table_S*_literature_check.csv"))

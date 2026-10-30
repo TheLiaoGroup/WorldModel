@@ -161,7 +161,7 @@ def benchmark_panel(fig, rect):
     # Identify the cluster as a group, rather than attaching its label to the highest point.
     ax.text(1.2, 43.5, f"{len(lit)} arrays\nliterature-style", fontsize=S.SMALL, color=BLUE, va="center")
     star_label = real.loc[real.book_mae.idxmin()]
-    ax.annotate("Reaxys-trained\nsubstrate-only", xy=(100 * star_label.book_mae, 100 * star_label.mae_literature),
+    ax.annotate("Literature-trained\nsubstrate-only", xy=(100 * star_label.book_mae, 100 * star_label.mae_literature),
                 xytext=(-6, 0), textcoords="offset points", fontsize=S.SMALL, color=BLUE, ha="right", va="center",
                 clip_on=False)
     ax.text(20, 6, "8 random wells", color=GREY, fontsize=S.SMALL)
@@ -184,7 +184,7 @@ def training_curve(fig, box):
             ax.vlines(sizes, lo, hi, color=BLUE, lw=0.6, alpha=0.6)
             ax.plot(sizes, m, "-" if filled else "--", color=BLUE, lw=0.9, marker="*", ms=5.5,
                     mfc=BLUE if filled else "white", mec=BLUE, mew=0.6)
-        ax.text(sizes[-1] * 1.3, 100 * g["mae_literature"].mean().iloc[-1], "untried", fontsize=S.SMALL, color=BLUE, va="center")
+        ax.text(sizes[-1] * 1.3, 100 * g["mae_literature"].mean().iloc[-1], "unseen pairs", fontsize=S.SMALL, color=BLUE, va="center")
         ax.text(sizes[-1] * 1.3, 100 * g["book_mae"].mean().iloc[-1], "benchmark", fontsize=S.SMALL, color=BLUE, va="center")
         ax.text(sizes[0] * 0.85, 75, NAMES[rx], fontsize=S.SMALL, va="top")
         ax.set_xscale("log")
@@ -464,8 +464,8 @@ def main():
     if (OUT / "literature_check_pairs.csv").exists():
         extended_data2()
         print("wrote Figures 2–5 and Extended Data 2")
-    else:  # per-pair literature yields are licensed and not distributed; see README
-        print("wrote Figures 2–5; Extended Data 2 requires licensed per-pair literature yields")
+    else:  # manually extracted per-pair literature yields are not distributed; see README
+        print("wrote Figures 2–5; Extended Data 2 requires manually extracted per-pair literature yields")
 
 
 if __name__ == "__main__":
